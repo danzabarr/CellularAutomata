@@ -35,12 +35,6 @@ public class BitSpace extends Space
         return oldValue;
     }
 
-    /**
-     * Toggles the value of the cell at the given coordinates.
-     * @param x The x coordinate of the cell to toggle.
-     * @param y The y coordinate of the cell to toggle.
-     * @return The new value of the cell.
-     */
     public double toggle(int x, int y)
     {
         if (x < 0 || x >= width || y < 0 || y >= height)

@@ -7,6 +7,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Represents a mask to be used in a cellular automaton.
+ */
 public class Mask
 {
     private double[] values;

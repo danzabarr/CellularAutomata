@@ -29,7 +29,6 @@ public class Program extends JPanel implements KeyListener, MouseListener, Mouse
     public Program() throws IOException
     {
         //space = new BitSpace(100, 100, Neighbourhood.CIRCLE_RADIUS_5, Rule.BACTERIA_2, Rule.BACTERIA_3);
-
         space = new BufferedSpace(128, 128, Mask.load("masks/mask_03.png"), RationalRule.LIFE);
 
         setPreferredSize(new Dimension(1024, 768));
@@ -75,30 +74,16 @@ public class Program extends JPanel implements KeyListener, MouseListener, Mouse
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-
-        Graphics2D g2d = (Graphics2D)g;
-
-        space.draw(g2d, SIZE);
-
-
-
-
-
-        g.setColor(Color.red);
-        g.drawRect(mouseCell.x * SIZE, mouseCell.y * SIZE, SIZE, SIZE);
-
-        g.drawRect(0, 0, space.width * SIZE, space.height * SIZE);
-
-        
-
+        space.draw((Graphics2D) g, SIZE);
     }
 
     private boolean painting = true;
 
     @Override
-    public void mouseClicked(MouseEvent e)
+    public void mouseMoved(MouseEvent e)
     {
-
+        mouseCell = new Point(e.getX() / SIZE, e.getY() / SIZE);
+        repaint();
     }
 
     @Override
@@ -110,31 +95,12 @@ public class Program extends JPanel implements KeyListener, MouseListener, Mouse
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) { }
-
-    @Override
-    public void mouseEntered(MouseEvent e) { }
-
-    @Override
-    public void mouseExited(MouseEvent e) { }
-
-    @Override
     public void mouseDragged(MouseEvent e)
     {
         mouseCell = new Point(e.getX() / SIZE, e.getY() / SIZE);
         space.set(mouseCell.x, mouseCell.y, painting ? 1.0 : 0.0);
         repaint();
     }
-
-    @Override
-    public void mouseMoved(MouseEvent e)
-    {
-        mouseCell = new Point(e.getX() / SIZE, e.getY() / SIZE);
-        repaint();
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) { }
 
     @Override
     public void keyPressed(KeyEvent e)
@@ -148,9 +114,23 @@ public class Program extends JPanel implements KeyListener, MouseListener, Mouse
 
         if (e.getKeyCode() == KeyEvent.VK_SPACE)
             running = !running;
-
     }
 
+
+
+
+
+
+    @Override
+    public void mouseClicked(MouseEvent e) { }
+    @Override
+    public void mouseReleased(MouseEvent e) { }
+    @Override
+    public void mouseEntered(MouseEvent e) { }
+    @Override
+    public void mouseExited(MouseEvent e) { }
+    @Override
+    public void keyTyped(KeyEvent e) { }
     @Override
     public void keyReleased(KeyEvent e) { }
 }
