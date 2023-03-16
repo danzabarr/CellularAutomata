@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.function.Predicate;
 
 public class Program extends JPanel implements KeyListener, MouseListener, MouseMotionListener
 {
@@ -24,24 +28,13 @@ public class Program extends JPanel implements KeyListener, MouseListener, Mouse
     public static final long INTERVAL = 1000000000L / 16; //16th second
 
     public Space space;
-    public Point mouseCell = new Point();
+    public java.awt.Point mouseCell = new java.awt.Point();
     public boolean running;
 
     public Program() throws IOException
     {
-        //space = new BitSpace(100, 100, Neighbourhood.CIRCLE_RADIUS_5, Rule.BACTERIA_2, Rule.BACTERIA_3);
-
-        Neighbourhood mask_01 = Neighbourhood.load("masks/mask_01.png");
-        Neighbourhood mask_02 = Neighbourhood.load("masks/mask_02.png");
-        Neighbourhood mask_03 = Neighbourhood.load("masks/mask_03.png");
-
-        Neighbourhood von_neumann = Neighbourhood.load("masks/von_neumann.png");
-        Neighbourhood moore = Neighbourhood.load("masks/moore.png");
-
-        System.out.println("moore" + moore.sumValue);
-
         space = new Space(128, 128, new HashMap<>() {{
-            put(Rule.CONWAYS, moore);
+            put(Rule.CONWAYS, Neighbourhood.MOORE);
         }});
 
         setPreferredSize(new Dimension(1024, 768));
@@ -95,14 +88,14 @@ public class Program extends JPanel implements KeyListener, MouseListener, Mouse
     @Override
     public void mouseMoved(MouseEvent e)
     {
-        mouseCell = new Point(e.getX() / SIZE, e.getY() / SIZE);
+        mouseCell = new java.awt.Point(e.getX() / SIZE, e.getY() / SIZE);
         repaint();
     }
 
     @Override
     public void mousePressed(MouseEvent e)
     {
-        mouseCell = new Point(e.getX() / SIZE, e.getY() / SIZE);
+        mouseCell = new java.awt.Point(e.getX() / SIZE, e.getY() / SIZE);
         painting = space.toggle(mouseCell.x, mouseCell.y) > 0.5;
         repaint();
     }
@@ -110,7 +103,7 @@ public class Program extends JPanel implements KeyListener, MouseListener, Mouse
     @Override
     public void mouseDragged(MouseEvent e)
     {
-        mouseCell = new Point(e.getX() / SIZE, e.getY() / SIZE);
+        mouseCell = new java.awt.Point(e.getX() / SIZE, e.getY() / SIZE);
         space.set(mouseCell.x, mouseCell.y, painting ? 1.0 : 0.0);
         repaint();
     }

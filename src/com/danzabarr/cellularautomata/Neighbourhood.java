@@ -12,11 +12,14 @@ import java.io.IOException;
  */
 public class Neighbourhood
 {
+
     public static final Neighbourhood MASK_01 = loadQuick("masks/mask_01.png");
     public static final Neighbourhood MASK_02 = loadQuick("masks/mask_02.png");
     public static final Neighbourhood MASK_03 = loadQuick("masks/mask_03.png");
+
     public static final Neighbourhood VON_NEUMANN = loadQuick("masks/von_neumann.png");
     public static final Neighbourhood MOORE = loadQuick("masks/moore.png");
+    public static final Neighbourhood MOORE_RING = loadQuick("masks/moore_ring.png");
 
     private double[] values;
     public final double sumValue;

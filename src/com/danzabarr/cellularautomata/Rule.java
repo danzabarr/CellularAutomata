@@ -7,20 +7,20 @@ public interface Rule
 {
     double test(double current, double sum, double average);
 
-    Rule LIFE = (current, sum, average)
+    Rule LIFE = (current, sum, average) ->
 
-            -> average >= 0.262364076538086 && average <= 0.342407354125977 ? current * 1.5 + 0.01 :
-            average >= 0.342407354125977 && average <= 0.382428992919922 ? current * 0.5:
-            average >= 0.382428992919922 && average <= 0.489153363037109 ? current * 1.25 + 0.01 :
-            average >= 0.489153363037109 && average <= 0.53806869934082 ? current * 0.125 :
+            average >= 0.262364076538086 && average <= 0.342407354125977 ? current * 1.500 + 0.01 :
+            average >= 0.342407354125977 && average <= 0.382428992919922 ? current * 0.500 + 0.00 :
+            average >= 0.382428992919922 && average <= 0.489153363037109 ? current * 1.250 + 0.01 :
+            average >= 0.489153363037109 && average <= 0.538068699340820 ? current * 0.125 + 0.00 :
             current;
 
-    Rule LIFE_2 = (current, sum, average)
+    Rule LIFE_2 = (current, sum, average) ->
 
-            -> average >= 0.262364076538086 && average <= 0.342407354125977 ? current * 0.5 + 0.01 :
-            average >= 0.342407354125977 && average <= 0.382428992919922 ? current * 0.5:
-            average >= 0.382428992919922 && average <= 0.489153363037109 ? current * 1.25 + 0.01 :
-            average >= 0.489153363037109 && average <= 0.53806869934082 ? current * 0.125 :
+            average >= 0.262364076538086 && average <= 0.342407354125977 ? current * 0.500 + 0.01 :
+            average >= 0.342407354125977 && average <= 0.382428992919922 ? current * 0.500 + 0.00 :
+            average >= 0.382428992919922 && average <= 0.489153363037109 ? current * 1.250 + 0.01 :
+            average >= 0.489153363037109 && average <= 0.538068699340820 ? current * 0.125 + 0.00 :
             current;
 
     Rule CONWAYS = (current, sum, average) ->
