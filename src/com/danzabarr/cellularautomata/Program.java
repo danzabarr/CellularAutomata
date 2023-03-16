@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Program extends JPanel implements KeyListener, MouseListener, MouseMotionListener
 {
@@ -29,7 +30,19 @@ public class Program extends JPanel implements KeyListener, MouseListener, Mouse
     public Program() throws IOException
     {
         //space = new BitSpace(100, 100, Neighbourhood.CIRCLE_RADIUS_5, Rule.BACTERIA_2, Rule.BACTERIA_3);
-        space = new BufferedSpace(128, 128, Mask.load("masks/mask_03.png"), RationalRule.LIFE);
+
+        Neighbourhood mask_01 = Neighbourhood.load("masks/mask_01.png");
+        Neighbourhood mask_02 = Neighbourhood.load("masks/mask_02.png");
+        Neighbourhood mask_03 = Neighbourhood.load("masks/mask_03.png");
+
+        Neighbourhood von_neumann = Neighbourhood.load("masks/von_neumann.png");
+        Neighbourhood moore = Neighbourhood.load("masks/moore.png");
+
+        System.out.println("moore" + moore.sumValue);
+
+        space = new Space(128, 128, new HashMap<>() {{
+            put(Rule.CONWAYS, moore);
+        }});
 
         setPreferredSize(new Dimension(1024, 768));
         JFrame frame = new JFrame();

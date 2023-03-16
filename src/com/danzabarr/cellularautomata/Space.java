@@ -1,63 +1,108 @@
 package com.danzabarr.cellularautomata;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
-public abstract class Space
+/**
+ * Represents a cellular automaton.
+ */
+public class Space
 {
+    public BufferedImage cells;
+    public BufferedImage buffer;
 
-    protected int width, height;
+    public HashMap<Rule, Neighbourhood> rules;
 
-    protected Space(int width, int height)
+    public Space(int width, int height, HashMap<Rule, Neighbourhood> rules)
     {
-        this.width = width;
-        this.height = height;
+        this.rules = rules;
+        cells = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     }
 
-    /**
-     * Computes the next step of the space.
-     */
+    public int getWidth()
+    {
+        return cells.getWidth();
+    }
+
+    public int getHeight()
+    {
+        return cells.getHeight();
+    }
+
+    public double get(int x, int y)
+    {
+        if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+            return 0;
+        return Neighbourhood.getValue(cells.getRGB(x, y));
+    }
+
+    public double set(int x, int y, double value)
+    {
+        if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+            return 0.0;
+
+        double oldValue = get(x, y);
+        cells.setRGB(x, y, Neighbourhood.getRGB(value));
+        return oldValue;
+    }
+
+    public double toggle(int x, int y)
+    {
+        if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+            return 0.0;
+        double value = get(x, y) == 0.0 ? 1.0 : 0.0;
+        set(x, y, value);
+        return value;
+    }
+
     public void step()
     {
         applyRules();
         swapBuffers();
     }
 
-    /**
-     * Applies rules to the space.
-     */
-    protected abstract void applyRules();
+    protected void applyRules()
+    {
+        for (HashMap.Entry<Rule, Neighbourhood> entry : rules.entrySet())
+        {
+            Rule rule = entry.getKey();
+            Neighbourhood neighbourhood = entry.getValue();
 
-    /**
-     * Swaps the buffers of the space.
-     */
-    protected abstract void swapBuffers();
+            for (int x = 0; x < getWidth(); x++)
+                for (int y = 0; y < getHeight(); y++)
+                {
+                    double sum = 0;
 
-    public abstract void draw(Graphics2D g, double scale);
+                    for (int mx = 0; mx < neighbourhood.getWidth(); mx++)
+                    {
+                        for (int my = 0; my < neighbourhood.getHeight(); my++)
+                        {
+                            double maskValue = neighbourhood.get(mx, my);
+                            double cellValue = get(x + mx - neighbourhood.getWidth() / 2, y + my - neighbourhood.getHeight() / 2);
+                            sum += maskValue * cellValue;
+                        }
+                    }
+                    double current = get(x, y);
+                    double average = sum / neighbourhood.sumValue;
 
+                    double value = Math.max(0.0, Math.min(1.0, rule.test(current, sum, average)));
+                    int rgb = new Color((int) (value * 255), (int) (value * 255), (int) (value * 255)).getRGB();
+                    buffer.setRGB(x, y, rgb);
+                }
+        }
+    }
 
-    /**
-     * Returns the value of the cell at the given coordinates.
-     * @param x The x coordinate of the cell to get.
-     * @param y The y coordinate of the cell to get.
-     * @return
-     */
-    public abstract double get(int x, int y);
+    protected void swapBuffers()
+    {
+        BufferedImage temp = cells;
+        cells = buffer;
+        buffer = temp;
+    }
 
-    /**
-     * Sets the value of the cell at the given coordinates.
-     * @param x The x coordinate of the cell to set.
-     * @param y The y coordinate of the cell to set.
-     * @param value The new value of the cell.
-     * @return The old value of the cell.
-     */
-    public abstract double set(int x, int y, double value);
-
-    /**
-     * Toggles the value of the cell at the given coordinates.
-     * @param x The x coordinate of the cell to toggle.
-     * @param y The y coordinate of the cell to toggle.
-     * @return The new value of the cell.
-     */
-    public abstract double toggle(int x, int y);
-
+    public void draw(Graphics2D g, double scale)
+    {
+        g.drawImage(cells, 0, 0, (int)(getWidth() * scale), (int)(getHeight() * scale), null);
+    }
 }

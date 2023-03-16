@@ -1,47 +1,33 @@
 package com.danzabarr.cellularautomata;
 
+/**
+ * Represents a rule to be used in a cellular automaton.
+ */
 public interface Rule
 {
-    boolean test(boolean active, int count, double average);
+    double test(double current, double sum, double average);
 
-    Rule CONWAYS = (active, count, average)
+    Rule LIFE = (current, sum, average)
 
-            -> count == 3 || active && count == 2;
+            -> average >= 0.262364076538086 && average <= 0.342407354125977 ? current * 1.5 + 0.01 :
+            average >= 0.342407354125977 && average <= 0.382428992919922 ? current * 0.5:
+            average >= 0.382428992919922 && average <= 0.489153363037109 ? current * 1.25 + 0.01 :
+            average >= 0.489153363037109 && average <= 0.53806869934082 ? current * 0.125 :
+            current;
 
+    Rule LIFE_2 = (current, sum, average)
 
-    Rule MAZE = (active, count, average)
+            -> average >= 0.262364076538086 && average <= 0.342407354125977 ? current * 0.5 + 0.01 :
+            average >= 0.342407354125977 && average <= 0.382428992919922 ? current * 0.5:
+            average >= 0.382428992919922 && average <= 0.489153363037109 ? current * 1.25 + 0.01 :
+            average >= 0.489153363037109 && average <= 0.53806869934082 ? current * 0.125 :
+            current;
 
-            -> count == 3 || active && count >= 1 && count <= 5;
+    Rule CONWAYS = (current, sum, average) ->
+    {
+        boolean active = current > 0.5;
+        int count = (int) sum;
 
-
-    Rule SOLVE_MAZE = (active, count, average)
-
-            -> count == 3 || active;
-
-
-    Rule BACTERIA = (active, count, average)
-
-        -> average >= 0.262364076538086 && average <= 0.902710297241211 ? true :
-            average >= 0.876029204711914 && average <= 0.764857985839844 ? false :
-            average >= 0.533621850585938 && average <= 0.911603994750977 ? false :
-            average >= 0.787092229614258 && average <= 0.449131724243164 ? true :
-            active;
-
-    Rule BACTERIA_2 = (active, count, average)
-
-            -> average >= 0.342407354125977 && average <= 0.382428992919922 ? true :
-                average >= 0.755964288330078 && average <= 0.53806869934082 ? true :
-                average >= 0.195661345214844 && average <= 0.217895588989258 ? false :
-                average >= 0.671474161987305 && average <= 0.489153363037109 ? true :
-                active;
-
-    Rule BACTERIA_3 = (active, count, average)
-
-            -> average >= 0.262364076538086 && average <= 0.342407354125977 ? true :
-                average >= 0.342407354125977 && average <= 0.382428992919922 ? false :
-                average >= 0.382428992919922 && average <= 0.489153363037109 ? true :
-                average >= 0.489153363037109 && average <= 0.53806869934082 ? false :
-                active;
+        return count == 3 || active && count == 2 ? 1 : 0;
+    };
 }
-
-
